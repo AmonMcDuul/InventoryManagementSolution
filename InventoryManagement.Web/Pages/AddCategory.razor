@@ -1,0 +1,18 @@
+﻿@page "/addcategory"
+@inherits CategoriesBase
+
+<EditForm Model=@itemCategoryDto>
+  <div class="form-group">
+    <label for="Name">Category</label>
+    <InputText @bind-Value=itemCategoryDto.Name class="form-control" id="Name" />
+  </div>
+  <br />
+    <a class="btn btn-primary" 
+        @onclick ="() => (AddCategory_Click(new ItemCategoryDto{
+        Name = itemCategoryDto.Name
+    }))"href="/categories">Add</a>
+</EditForm>
+
+@code {
+  ItemCategoryDto itemCategoryDto = new ItemCategoryDto();
+}

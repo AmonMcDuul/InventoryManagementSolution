@@ -1,0 +1,35 @@
+﻿@page "/additem"
+@inherits AddItemBase
+
+<EditForm Model=@itemDto>
+  <div class="form-group">
+    <label for="Name">Name</label>
+    <InputText @bind-Value=itemDto.Name class="form-control" id="Name" />
+  </div>
+  <br />
+  <label for="Category">Category</label>
+  <InputSelect id="category" @bind-Value="itemDto.CategoryId">
+    @foreach (var category in Category)
+    {
+        <option value="@category.Id">@category.Name</option>
+    }
+  </InputSelect>
+  <label for="Location">Location</label>
+  <InputSelect id="location" @bind-Value="itemDto.LocationId">
+    @foreach (var location in Locations)
+    {
+        <option value="@location.Id">@location.Name</option>
+    }
+  </InputSelect>
+    <br />
+    <a class="btn btn-primary" 
+        @onclick ="() => (AddItem_Click(new ItemToAddDto{
+        Name = itemDto.Name,
+        CategoryId = itemDto.CategoryId,
+        LocationId = itemDto.LocationId
+    }))"href="/">Add</a>
+</EditForm>
+
+@code {
+    ItemDto itemDto = new ItemDto();
+}

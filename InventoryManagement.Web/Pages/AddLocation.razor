@@ -1,0 +1,18 @@
+﻿@page "/addlocation"
+@inherits LocationsBase
+
+<EditForm Model=@itemLocationDto>
+  <div class="form-group">
+    <label for="Name">Location</label>
+    <InputText @bind-Value=itemLocationDto.Name class="form-control" id="Name" />
+  </div>
+  <br />
+    <a class="btn btn-primary" 
+        @onclick ="() => (AddLocation_Click(new ItemLocationDto{
+        Name = itemLocationDto.Name
+    }))"href="/locations">Add</a>
+</EditForm>
+
+@code {
+  ItemLocationDto itemLocationDto = new ItemLocationDto();
+}

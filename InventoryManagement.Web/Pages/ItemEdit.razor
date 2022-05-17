@@ -1,0 +1,40 @@
+﻿@page "/itemedit/{Id:int}"
+@inherits ItemEditBase
+
+@if (Item == null && ErrorMessage == null)
+{
+    <h3>No data</h3>
+}
+else if (ErrorMessage != null)
+{
+    <h3>Error</h3>
+}
+else
+{
+    <h3>Edit item</h3>
+
+@*<input type="button" class="btn btn-primary" /> @onclick="@AddItem" value="Update" />*@
+
+<EditForm Model=@itemDto>
+  <div class="form-group">
+    <h4>@Item.Name   -|-   @Item.Category</h4>
+  </div>
+  <br />
+  <label for="Location">Location</label>
+  <InputSelect id="location" @bind-Value="itemDto.LocationId">
+    @foreach (var location in Locations)
+    {
+        <option value="@location.Id">@location.Name</option>
+    }
+  </InputSelect>
+  <br />
+    <a class="btn btn-primary" 
+        @onclick="(() => UpdateItem_Click(Item.Id, itemDto.LocationId))"
+        href="/">Edit</a>
+</EditForm>
+
+@code {
+    ItemDto itemDto = new ItemDto();
+}
+
+}

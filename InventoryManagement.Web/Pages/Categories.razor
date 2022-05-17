@@ -1,0 +1,132 @@
+﻿@page "/categories"
+@inherits CategoriesBase
+
+<link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+
+<style>
+    .sort-th {
+        cursor: pointer;
+    }
+    .fa {
+        float: right;
+    }
+</style>
+
+<div>
+    <a class="btn btn-primary" 
+    href="/addcategory">Add</a>
+</div>
+<br />
+
+@if (Category == null)
+{
+    <p><em>Loading categories</em></p>
+}
+else
+{
+    var categoryCount = Category.Count();
+    var categoryRowList = new List<ItemCategoryDto>();
+    categoryRowList = Category.ToList();
+    <div class="form-group">
+    <input class="form-control" type="text" placeholder="Filter..."
+           @bind="Filter"
+           @bind:event="oninput">
+    </div>
+    <table class="table table-bordered table-hover">
+        <thead>
+            <tr>
+                <th class="sort-th" @onclick="@(() => SortTable("Name"))">
+                    Id
+                    <span class="fa @(SetSortIcon("Name"))"></span>
+                </th>
+                <th class="sort-th" @onclick="@(() => SortTable("Category"))">
+                    Name
+                    <span class="fa @(SetSortIcon("Category"))"></span>
+                </th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach(var category in categoryRowList)
+            {
+                if (!IsVisible(category))
+                    continue;
+                <tr>
+                    <td>@category.Id</td>
+                    <td>@category.Name</td>
+                    <td>
+                       <a class="btn btn-danger" @onclick="(() => DeleteCategory_Click(category.Id))" href="/categories">Delete</a>  
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+
+@code {
+
+    private ItemCategoryDto[] items;
+ 
+    protected override async Task OnInitializedAsync()
+    {
+        Category = await CategoryService.GetCategories();
+    }
+ 
+    public string Filter { get; set; }
+
+    public bool IsVisible(ItemCategoryDto item)
+    {
+        if (string.IsNullOrEmpty(Filter))
+            return true;
+ 
+        if (item.Name.Contains(Filter, StringComparison.OrdinalIgnoreCase))
+            return true;
+ 
+        return false;
+    }
+
+    private bool isSortedAscending;
+    private string activeSortColumn;
+
+    private void SortTable(string columnName)
+    {
+        if (columnName != activeSortColumn)
+        {
+            Category = Category.OrderBy(x => x.GetType().GetProperty(columnName).GetValue(x, null)).ToList();
+            isSortedAscending = true;
+            activeSortColumn = columnName;
+
+        }
+        else
+        {
+            if (isSortedAscending)
+            {
+                Category = Category.OrderByDescending(x => x.GetType().GetProperty(columnName).GetValue(x, null)).ToList();
+            }
+            else
+            {
+                Category = Category.OrderBy(x => x.GetType().GetProperty(columnName).GetValue(x, null)).ToList();
+            }
+
+            isSortedAscending = !isSortedAscending;
+        }
+    }
+
+    private string SetSortIcon(string columnName)
+    {
+        if (activeSortColumn != columnName)
+        {
+            return string.Empty;
+        }
+        if (isSortedAscending)
+        {
+            return "fa-sort-up";
+        }
+        else
+        {
+            return "fa-sort-down";
+        }
+    }
+
+}

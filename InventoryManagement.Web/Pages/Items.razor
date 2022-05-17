@@ -1,0 +1,141 @@
+﻿@page "/"
+@inherits ItemsBase
+
+<link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+
+<style>
+    .sort-th {
+        cursor: pointer;
+    }
+    .fa {
+        float: right;
+    }
+</style>
+
+<div>
+    <a class="btn btn-primary" 
+    href="/additem">Add</a>
+</div>
+<br />
+
+@if (Items == null)
+{
+    <p><em>Loading inventory...</em></p>
+}
+else
+{
+    var itemCount = Items.Count();
+    var itemRowList = new List<ItemDto>();
+    itemRowList = Items.ToList();
+    <div class="form-group">
+    <input class="form-control" type="text" placeholder="Filter..."
+           @bind="Filter"
+           @bind:event="oninput">
+    </div>
+    <table class="table table-bordered table-hover">
+        <thead>
+            <tr>
+                <th class="sort-th" @onclick="@(() => SortTable("Name"))">
+                    Item
+                    <span class="fa @(SetSortIcon("Name"))"></span>
+                </th>
+                <th class="sort-th" @onclick="@(() => SortTable("Category"))">
+                    Category
+                    <span class="fa @(SetSortIcon("Category"))"></span>
+                </th>
+                <th class="sort-th" @onclick="@(() => SortTable("Location"))">
+                    Location
+                    <span class="fa @(SetSortIcon("Location"))"></span>
+                </th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach(var item in itemRowList)
+            {
+                if (!IsVisible(item))
+                    continue;
+                <tr>
+                    <td>@item.Name</td>
+                    <td>@item.Category</td>
+                    <td>@item.Location</td>
+                    <td>
+                        <a class="btn btn-primary" href='/Itemedit/@item.Id'>Edit</a>  
+                        |<a class="btn btn-danger" @onclick="(() => DeleteItem_Click(item.Id))">Delete</a>  
+                    </td>
+                </tr>      
+            }
+        </tbody>
+    </table>
+}
+
+
+@code {
+    private ItemDto[] items;
+ 
+    protected override async Task OnInitializedAsync()
+    {
+        Items = await ItemService.GetItems();
+    }
+ 
+    public string Filter { get; set; }
+
+    public bool IsVisible(ItemDto item)
+    {
+        if (string.IsNullOrEmpty(Filter))
+            return true;
+ 
+        if (item.Name.Contains(Filter, StringComparison.OrdinalIgnoreCase))
+            return true;
+        if (item.Category.Contains(Filter, StringComparison.OrdinalIgnoreCase))
+            return true;
+        if (item.Location.Contains(Filter, StringComparison.OrdinalIgnoreCase))
+            return true;
+ 
+        return false;
+    }
+
+    private bool isSortedAscending;
+    private string activeSortColumn;
+
+    private void SortTable(string columnName)
+    {
+        if (columnName != activeSortColumn)
+        {
+            Items = Items.OrderBy(x => x.GetType().GetProperty(columnName).GetValue(x, null)).ToList();
+            isSortedAscending = true;
+            activeSortColumn = columnName;
+
+        }
+        else
+        {
+            if (isSortedAscending)
+            {
+                Items = Items.OrderByDescending(x => x.GetType().GetProperty(columnName).GetValue(x, null)).ToList();
+            }
+            else
+            {
+                Items = Items.OrderBy(x => x.GetType().GetProperty(columnName).GetValue(x, null)).ToList();
+            }
+
+            isSortedAscending = !isSortedAscending;
+        }
+    }
+
+    private string SetSortIcon(string columnName)
+    {
+        if (activeSortColumn != columnName)
+        {
+            return string.Empty;
+        }
+        if (isSortedAscending)
+        {
+            return "fa-sort-up";
+        }
+        else
+        {
+            return "fa-sort-down";
+        }
+    }
+
+}

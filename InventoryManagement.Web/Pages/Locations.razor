@@ -1,0 +1,131 @@
+﻿@page "/locations"
+@inherits LocationsBase
+
+<link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+
+<style>
+    .sort-th {
+        cursor: pointer;
+    }
+    .fa {
+        float: right;
+    }
+</style>
+
+<div>
+    <a class="btn btn-primary" 
+    href="/addlocation">Add</a>
+</div>
+<br />
+
+@if (Locations == null)
+{
+    <p><em>Loading locations</em></p>
+}
+else
+{
+    var locationCount = Locations.Count();
+    var locationRowList = new List<ItemLocationDto>();
+    locationRowList = Locations.ToList();
+    <div class="form-group">
+    <input class="form-control" type="text" placeholder="Filter..."
+           @bind="Filter"
+           @bind:event="oninput">
+    </div>
+    <table class="table table-bordered table-hover">
+        <thead>
+            <tr>
+                <th class="sort-th" @onclick="@(() => SortTable("Id"))">
+                    Id
+                    <span class="fa @(SetSortIcon("Id"))"></span>
+                </th>
+                <th class="sort-th" @onclick="@(() => SortTable("Name"))">
+                    Name
+                    <span class="fa @(SetSortIcon("Name"))"></span>
+                </th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach(var location in locationRowList)
+            {
+                if (!IsVisible(location))
+                    continue;
+                <tr>
+                    <td>@location.Id</td>
+                    <td>@location.Name</td>
+                    <td>
+                       <a class="btn btn-danger" @onclick="(() => DeleteLocation_Click(location.Id))">Delete</a>  
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+
+@code {
+
+    private ItemLocationDto[] items;
+ 
+    protected override async Task OnInitializedAsync()
+    {
+        Locations = await LocationService.GetLocations();
+    }
+ 
+    public string Filter { get; set; }
+
+    public bool IsVisible(ItemLocationDto item)
+    {
+        if (string.IsNullOrEmpty(Filter))
+            return true;
+ 
+        if (item.Name.Contains(Filter, StringComparison.OrdinalIgnoreCase))
+            return true;
+ 
+        return false;
+    }
+    private bool isSortedAscending;
+    private string activeSortColumn;
+
+    private void SortTable(string columnName)
+    {
+        if (columnName != activeSortColumn)
+        {
+            Locations = Locations.OrderBy(x => x.GetType().GetProperty(columnName).GetValue(x, null)).ToList();
+            isSortedAscending = true;
+            activeSortColumn = columnName;
+
+        }
+        else
+        {
+            if (isSortedAscending)
+            {
+                Locations = Locations.OrderByDescending(x => x.GetType().GetProperty(columnName).GetValue(x, null)).ToList();
+            }
+            else
+            {
+                Locations = Locations.OrderBy(x => x.GetType().GetProperty(columnName).GetValue(x, null)).ToList();
+            }
+
+            isSortedAscending = !isSortedAscending;
+        }
+    }
+
+    private string SetSortIcon(string columnName)
+    {
+        if (activeSortColumn != columnName)
+        {
+            return string.Empty;
+        }
+        if (isSortedAscending)
+        {
+            return "fa-sort-up";
+        }
+        else
+        {
+            return "fa-sort-down";
+        }
+    }
+
+}
