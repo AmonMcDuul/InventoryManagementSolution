@@ -25,13 +25,13 @@ else
     <table class="table table-bordered table-hover">
         <thead>
             <tr>
-                <th class="sort-th" @onclick="@(() => SortTable("Name"))">
+                <th class="sort-th" @onclick="@(() => SortTable("Id"))">
                     Id
-                    <span class="fa @(SetSortIcon("Name"))"></span>
+                    <span class="fa @(SetSortIcon("Id"))"></span>
                 </th>
-                <th class="sort-th" @onclick="@(() => SortTable("Category"))">
+                <th class="sort-th" @onclick="@(() => SortTable("Name"))">
                     Name
-                    <span class="fa @(SetSortIcon("Category"))"></span>
+                    <span class="fa @(SetSortIcon("Name"))"></span>
                 </th>
                 <th>Action</th>
             </tr>
