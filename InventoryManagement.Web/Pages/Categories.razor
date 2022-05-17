@@ -3,15 +3,6 @@
 
 <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
 
-<style>
-    .sort-th {
-        cursor: pointer;
-    }
-    .fa {
-        float: right;
-    }
-</style>
-
 <div>
     <a class="btn btn-primary" 
     href="/addcategory">Add</a>
@@ -66,6 +57,7 @@ else
 
 @code {
 
+    //Search functionality
     private ItemCategoryDto[] items;
  
     protected override async Task OnInitializedAsync()
@@ -86,6 +78,7 @@ else
         return false;
     }
 
+    //Sorting functionality
     private bool isSortedAscending;
     private string activeSortColumn;
 
