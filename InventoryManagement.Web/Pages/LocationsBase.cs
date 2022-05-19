@@ -8,6 +8,8 @@ namespace InventoryManagement.Web.Pages
     {
         [Inject]
         public ILocationService LocationService { get; set; }
+        [Inject]
+        NavigationManager NavigationManager { get; set; }
         public IEnumerable<ItemLocationDto> Locations { get; set; }
         private bool isSortedAscending;
         private string activeSortColumn;
@@ -76,6 +78,7 @@ namespace InventoryManagement.Web.Pages
             try
             {
                 var locationDto = await LocationService.AddLocation(itemLocationDto);
+                NavigationManager.NavigateTo("/locations", true);
             }
             catch (Exception e)
             {

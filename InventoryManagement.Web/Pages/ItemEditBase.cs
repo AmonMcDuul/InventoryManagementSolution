@@ -12,6 +12,8 @@ namespace InventoryManagement.Web.Pages
         public IItemService ItemService { get; set; }
         [Inject]
         public ILocationService LocationService { get; set; }
+        [Inject]
+        NavigationManager NavigationManager { get; set; }
         public IEnumerable<ItemLocationDto> Locations { get; set; }
 
         public ItemDto Item { get; set; }
@@ -41,6 +43,7 @@ namespace InventoryManagement.Web.Pages
                     LocationId = locationId
                 };
                 var returnedUpdateItemDto = await this.ItemService.UpdateItem(updateItemDto);
+                NavigationManager.NavigateTo("/", true);
             }
             catch (Exception e)
             {

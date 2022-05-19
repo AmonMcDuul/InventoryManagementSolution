@@ -29,12 +29,10 @@ else
   </InputSelect>
   <br />
     <a class="btn btn-primary" 
-        @onclick="(() => UpdateItem_Click(Item.Id, itemDto.LocationId))"
-        href="/">Edit</a>
+        @onclick="(() => UpdateItem_Click(Item.Id, itemDto.LocationId))">Edit</a>
 </EditForm>
+}
 
 @code {
     ItemDto itemDto = new ItemDto();
-}
-
 }

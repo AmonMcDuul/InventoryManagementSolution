@@ -12,6 +12,8 @@ namespace InventoryManagement.Web.Pages
         public ICategoryService CategoryService { get; set; }
         [Inject]
         public ILocationService LocationService { get; set; }
+        [Inject]
+        NavigationManager NavigationManager { get; set; }
         public IEnumerable<ItemDto> Items { get; set; }
         public IEnumerable<ItemCategoryDto> Category { get; set; }
         public IEnumerable<ItemLocationDto> Locations { get; set; }
@@ -28,6 +30,7 @@ namespace InventoryManagement.Web.Pages
             try
             {
                 var itemDto = await ItemService.AddItem(itemToAddDto);
+                NavigationManager.NavigateTo("/", true);
             }
             catch (Exception e)
             {

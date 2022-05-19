@@ -8,6 +8,8 @@ namespace InventoryManagement.Web.Pages
     {
         [Inject]
         public ICategoryService CategoryService { get; set; }
+        [Inject]
+        NavigationManager NavigationManager { get; set; }
         public IEnumerable<ItemCategoryDto> Category { get; set; }
 
         private bool isSortedAscending;
@@ -78,6 +80,7 @@ namespace InventoryManagement.Web.Pages
             try
             {
                 var categoryDto = await CategoryService.AddCategory(itemCategoryDto);
+                NavigationManager.NavigateTo("/categories", true);
             }
             catch (Exception e)
             {
