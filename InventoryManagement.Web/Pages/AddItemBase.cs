@@ -19,7 +19,6 @@ namespace InventoryManagement.Web.Pages
 
         protected override async Task OnInitializedAsync()
         {
-            Items = await ItemService.GetItems();
             Category = await CategoryService.GetCategories();
             Locations = await LocationService.GetLocations();
         }
