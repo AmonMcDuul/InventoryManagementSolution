@@ -93,6 +93,13 @@ namespace InventoryManagement.Api.Controllers
         {
             try
             {
+                var items = await this.itemRepository.GetItems();
+                var categoryIsUsed = items.Any(x => x.CategoryId == id);
+                if (categoryIsUsed)
+                {
+                    return Forbid();
+                }
+
                 var category = await this.itemRepository.DeleteCategory(id);
 
                 if (category == null)

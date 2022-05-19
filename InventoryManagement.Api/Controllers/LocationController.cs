@@ -94,8 +94,15 @@ namespace InventoryManagement.Api.Controllers
         {
             try
             {
-                var location = await this.itemRepository.DeleteLocation(id);
+                var items = await this.itemRepository.GetItems();
+                var locationIsUsed = items.Any(x => x.LocationId == id);
+                if(locationIsUsed)
+                {
+                    return Forbid();
+                }
 
+                var location = await this.itemRepository.DeleteLocation(id);
+                
                 if (location == null)
                 {
                     return NotFound();

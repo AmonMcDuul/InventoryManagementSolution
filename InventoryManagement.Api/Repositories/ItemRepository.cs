@@ -20,11 +20,8 @@ namespace InventoryManagement.Api.Repositories
 
         public async Task<Category> AddCategory(ItemCategoryDto itemCategoryDto)
         {
-            var categoryToAdd = await(from category in this.inventoryManagementDbContext.Categories
-                                  select new Category
-                                  {
-                                      Name = itemCategoryDto.Name
-                                  }).FirstOrDefaultAsync();
+            var categoryToAdd = new Category();
+            categoryToAdd.Name = itemCategoryDto.Name;
             if (categoryToAdd != null)
             {
                 var result = await this.inventoryManagementDbContext.Categories.AddAsync(categoryToAdd);
@@ -36,13 +33,10 @@ namespace InventoryManagement.Api.Repositories
 
         public async Task<Item> AddItem(ItemToAddDto itemToAddDto)
         {
-            var itemToAdd = await (from item in this.inventoryManagementDbContext.Items
-                              select new Item
-                              {
-                                  Name = itemToAddDto.Name,
-                                  CategoryId = itemToAddDto.CategoryId,
-                                  LocationId = itemToAddDto.LocationId
-                              }).FirstOrDefaultAsync();
+            var itemToAdd = new Item();
+            itemToAdd.Name = itemToAddDto.Name;
+            itemToAdd.CategoryId = itemToAddDto.CategoryId;
+            itemToAdd.LocationId = itemToAddDto.LocationId;
             if (itemToAdd != null)
             {
                 var result = await this.inventoryManagementDbContext.Items.AddAsync(itemToAdd);
@@ -54,11 +48,8 @@ namespace InventoryManagement.Api.Repositories
 
         public async Task<Location> AddLocation(ItemLocationDto itemLocationDto)
         {
-            var locationToAdd = await(from location in this.inventoryManagementDbContext.Locations
-                                      select new Location
-                                      {
-                                          Name = itemLocationDto.Name
-                                      }).FirstOrDefaultAsync();
+            var locationToAdd = new Location();
+            locationToAdd.Name = itemLocationDto.Name; 
             if (locationToAdd != null)
             {
                 var result = await this.inventoryManagementDbContext.Locations.AddAsync(locationToAdd);
