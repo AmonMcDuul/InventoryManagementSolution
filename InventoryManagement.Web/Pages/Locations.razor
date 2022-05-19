@@ -25,10 +25,6 @@ else
     <table class="table table-bordered table-hover">
         <thead>
             <tr>
-                <th class="sort-th" @onclick="@(() => SortTable("Id"))">
-                    Id
-                    <span class="fa @(SetSortIcon("Id"))"></span>
-                </th>
                 <th class="sort-th" @onclick="@(() => SortTable("Name"))">
                     Name
                     <span class="fa @(SetSortIcon("Name"))"></span>
@@ -42,7 +38,6 @@ else
                 if (!IsVisible(location))
                     continue;
                 <tr>
-                    <td>@location.Id</td>
                     <td>@location.Name</td>
                     <td>
                        <a class="btn btn-danger" @onclick="(() => DeleteLocation_Click(location.Id))">Delete</a>  
@@ -51,76 +46,4 @@ else
             }
         </tbody>
     </table>
-}
-
-
-@code {
-
-    //Search functionality
-
-    private ItemLocationDto[] items;
- 
-    protected override async Task OnInitializedAsync()
-    {
-        Locations = await LocationService.GetLocations();
-    }
- 
-    public string Filter { get; set; }
-
-    public bool IsVisible(ItemLocationDto item)
-    {
-        if (string.IsNullOrEmpty(Filter))
-            return true;
- 
-        if (item.Name.Contains(Filter, StringComparison.OrdinalIgnoreCase))
-            return true;
- 
-        return false;
-    }
-
-    //Sorting functionality
-
-    private bool isSortedAscending;
-    private string activeSortColumn;
-
-    private void SortTable(string columnName)
-    {
-        if (columnName != activeSortColumn)
-        {
-            Locations = Locations.OrderBy(x => x.GetType().GetProperty(columnName).GetValue(x, null)).ToList();
-            isSortedAscending = true;
-            activeSortColumn = columnName;
-
-        }
-        else
-        {
-            if (isSortedAscending)
-            {
-                Locations = Locations.OrderByDescending(x => x.GetType().GetProperty(columnName).GetValue(x, null)).ToList();
-            }
-            else
-            {
-                Locations = Locations.OrderBy(x => x.GetType().GetProperty(columnName).GetValue(x, null)).ToList();
-            }
-
-            isSortedAscending = !isSortedAscending;
-        }
-    }
-
-    private string SetSortIcon(string columnName)
-    {
-        if (activeSortColumn != columnName)
-        {
-            return string.Empty;
-        }
-        if (isSortedAscending)
-        {
-            return "fa-sort-up";
-        }
-        else
-        {
-            return "fa-sort-down";
-        }
-    }
-
 }
